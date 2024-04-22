@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import Loader from './UI/Loader';
+
 import MoviesList from './components/MoviesList';
 import './App.css';
 import axios from 'axios';
+import AddMovieForm from './components/AddMovieForm';
 
 function App() {
   const [movies, setMovies] = useState([]);
@@ -43,6 +44,9 @@ setError(error.message)
 
   return (
     <React.Fragment>
+      <section>
+        <AddMovieForm/>
+      </section>
       <section>
         <button onClick={fetchMoviesHandler}>Fetch Movies</button>
       </section>
