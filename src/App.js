@@ -2,27 +2,41 @@ import React, { useState } from 'react';
 import Loader from './UI/Loader';
 import MoviesList from './components/MoviesList';
 import './App.css';
+import axios from 'axios';
 
 function App() {
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [error,setError] = useState(null)
 
   async function fetchMoviesHandler() {
-    setIsLoading(true);
-    const response = await fetch('https://swapi.dev/api/films/');
-    const data = await response.json();
-
-    const transformedMovies = data.results.map((movieData) => {
-      return {
-        id: movieData.episode_id,
-        title: movieData.title,
-        openingText: movieData.opening_crawl,
-        releaseDate: movieData.release_date,
-      };
-    });
-    setMovies(transformedMovies);
+    
+    try{
+      setIsLoading(true);
+      setError(null)
+      const response = await axios.get('https://jsonplaceholder.typicode.com/todos'); 
+      console.log(response)
+      if (!response){
+        throw new error('something went wrong')
+      }
+      const data = response.data
+      const transformedMovies = data.map((movieData) => {
+        return {
+          id: movieData.id,
+          title: movieData.title
+        };
+      });
+      setMovies(transformedMovies);
+      
+  
+    }
+    catch(error){
+      console.log(error)
+setError(error.message)
+    }
     setIsLoading(false);
   }
+    
 
   return (
     <React.Fragment>
@@ -31,10 +45,11 @@ function App() {
       </section>
       <section>
         {!isLoading && movies.length > 0 && <MoviesList movies={movies} />}
-        {isLoading && <Loader/>}
+        {isLoading && <p>Loading....</p>}
+        {!isLoading && error && <p>{error}</p>}
       </section>
     </React.Fragment>
   );
 }
 
-export default App;
+export default App
