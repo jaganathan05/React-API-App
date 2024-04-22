@@ -9,6 +9,11 @@ function App() {
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error,setError] = useState(null)
+  const [refresh , setrefresh ] = useState(false);
+
+  const refreshhandler = ()=>{
+    setrefresh(true)
+  }
 
   
 
@@ -17,20 +22,23 @@ function App() {
     try{
       setIsLoading(true);
       setError(null)
-      const response = await axios.get('https://jsonplaceholder.typicode.com/todos'); 
+      const response = await axios.get('https://crudcrud.com/api/98f1e542235b42ce91590b12cb4d721f/movies'); 
       console.log(response)
       if (!response){
         throw new error('something went wrong')
       }
       const data = response.data
       const transformedMovies = data.map((movieData) => {
+
         return {
-          id: movieData.id,
-          title: movieData.title
+          id: movieData._id,
+          title: movieData.title,
+          openingText : movieData.openingtext,
+          releaseDate:  movieData.releaseDate
         };
       });
       setMovies(transformedMovies);
-      
+      setrefresh(false)
   
     }
     catch(error){
@@ -40,7 +48,7 @@ setError(error.message)
     setIsLoading(false);
   },[error])
     
-  useEffect(()=>{fetchMoviesHandler()},[fetchMoviesHandler])
+  useEffect(()=>{fetchMoviesHandler()},[fetchMoviesHandler,refresh])
 
   return (
     <React.Fragment>
@@ -51,7 +59,7 @@ setError(error.message)
         <button onClick={fetchMoviesHandler}>Fetch Movies</button>
       </section>
       <section>
-        {!isLoading && movies.length > 0 && <MoviesList movies={movies} />}
+        {!isLoading && movies.length > 0 && <MoviesList movies={movies} onClick={refreshhandler}/>}
         {isLoading && <p>Loading....</p>}
         {!isLoading && error && <p>{error}</p>}
       </section>

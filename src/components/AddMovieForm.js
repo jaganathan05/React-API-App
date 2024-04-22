@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import { Button, FloatingLabel, Form } from "react-bootstrap";
 import './AddMovieForm.css'
 
+
 function AddMovieForm() {
 
     const titleref = useRef()
@@ -9,7 +10,7 @@ function AddMovieForm() {
     const releaseDateRef = useRef()
 
 
-    const formsubmit = ()=>{
+    const formsubmit = async ()=>{
         const newmovieobj = {
             title : titleref.current.value,
             openingtext : openingtextref.current.value,
@@ -18,9 +19,19 @@ function AddMovieForm() {
 
         console.log(newmovieobj);
 
+        const response = await fetch('https://crudcrud.com/api/98f1e542235b42ce91590b12cb4d721f/movies', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newmovieobj)
+        })
+
         titleref.current.value=''
         openingtextref.current.value=''
         releaseDateRef.current.value=''
+
+
     }
     return (
         <React.Fragment>
